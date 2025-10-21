@@ -8,7 +8,7 @@ Um projeto de calculadora financeira desenvolvido pelo SOFTHUB (Fabrica de Softw
 ## 📝 Descrição
 
 
-Este projeto é uma aplicação web simples que permite aos usuários realizar cálculos financeiros básicos. O objetivo é fornecer uma ferramenta prática e de fácil uso para estudantes e interessados em finanças.
+Este projeto é uma aplicação web simples que permite aos usuários realizar cálculos de valores de mensalidade com ou sem desconto. O objetivo é fornecer uma ferramenta prática e de fácil uso para a comunidade e interessados em saber o valor da mensalidade mensal e semestral.
 
 
 ## ✨ Funcionalidades
@@ -20,8 +20,7 @@ Este projeto é uma aplicação web simples que permite aos usuários realizar c
 A calculadora atualmente suporta as seguintes operações:
 
 
-* **Juros Simples:** Calcula o montante final, juros, capital inicial, taxa ou tempo.
-* **Juros Compostos:** Calcula o montante final com base em aportes regulares ou únicos.
+* **Cálculo de Desconto da UniEuro** Calcula a porcentagem que desconto que a Universidade oferece.
 * **Gerador de PDF:** Funcionalidade que gera um PDF com todas as informações de calculos feitos.
 * **Cálculo de Desconto PROUNI:** Funcionlalidade que calcula os 50% de desconto do PROUNI no valor da mensalidade.
 

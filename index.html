@@ -16,11 +16,11 @@
     <link href="estilos-compilados.css" rel="stylesheet">
 
     <!-- Biblioteca para baixar em PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 </head>
 
-<body class="bg-gray-100" id = "content">
+<body class="bg-gray-100">
 
     <!-- CABEÇALHO SUPERIOR COM LOGO E ÍCONES SOCIAIS -->
     <div class="bg-white">
@@ -56,7 +56,7 @@
     </nav>
 
     <!-- CONTEÚDO PRINCIPAL -->
-    <main class="max-w-7xl mx-auto px-6 py-10">
+    <main class="max-w-7xl mx-auto px-6 py-10" id="conteudo-para-pdf">
 
         <!-- SEÇÃO 1: VALORES BÁSICOS -->
         <form id="form-calculadora">
@@ -111,7 +111,7 @@
         </form>
 
         <!-- SEÇÃO 2: RESULTADO BASE -->
-        <div id="conteudo-para-pdf">
+        <div>
             <section id="resultado-base" class="mb-10">
                 <h2 class="text-xl font-bold text-[#0D4B81] mb-5">2. Resultado Base</h2>
                 <div class="bg-[#F0F5FA] border-[3px] border-[#00326F] rounded-lg p-6">

@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Botões
     const botaoCalcular = document.getElementById("btn-calcular");
     const botaoLimpar = document.getElementById("btn-limpar");
-    const botaoPdf = document.getElementById("btn-pdf");
+    const btnGenerate = document.querySelector("#btn-pdf");
 
     // O bloco de resultado do PROUNI que vamos mostrar/esconder
     const blocoResultadoProuni = document.getElementById("bloco-resultado-prouni");
@@ -30,19 +30,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Função para gerar o PDF
-    const btnGenerate = document.querySelector("#btn-pdf");
 
     btnGenerate.addEventListener("click", () => {
 
         // Conteudo do PDF
-        const content = document.querySelector("#content");
+        const content = document.querySelector("#conteudo-para-pdf");
 
         // Configuracao do arquivo final de PDF
         const options = {
             margin: [10, 10, 10, 10],
             filename: "resultado-calculo-mensalidade.pdf",
-            html2canvas: {scale: 2},
-            jsPDF: {unit: "mm", format: "a4", orientation: "landscape"}
+            jsPDF: {unit: "mm", format: "a4", orientation: "landscape"},
+            scrollY: 0,
+            useCORS: true,
+            scale: 2,
+
         }
 
         // Gerar o PDF

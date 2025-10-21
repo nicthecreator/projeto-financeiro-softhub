@@ -1,26 +1,22 @@
+//Executa o código JavaScript apenas quando a estrutura do documento (DOM) estiver totalmente carregada.
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("=== SCRIPT INICIADO ===");
-    
-    // 1. SELECIONAR OS ELEMENTOS DO HTML
+
+    // SELEÇÃO DE ELEMENTOS DO HTML
+
+    // Campos de entrada do formulário
     const campoMensalidade = document.getElementById("valor-mensalidade");
     const campoDesconto = document.getElementById("desconto-unieuro");
     const toggleProuni = document.getElementById("toggle-prouni");
+    
+    // Botões de ação
     const botaoCalcular = document.getElementById("btn-calcular");
     const botaoLimpar = document.getElementById("btn-limpar");
     const botaoPdf = document.getElementById("btn-pdf");
+    
+    // Elementos de exibição de resultados
     const blocoResultadoProuni = document.getElementById("bloco-resultado-prouni");
-
-    console.log("Elementos encontrados:", {
-        campoMensalidade: !!campoMensalidade,
-        campoDesconto: !!campoDesconto,
-        toggleProuni: !!toggleProuni,
-        botaoCalcular: !!botaoCalcular,
-        botaoLimpar: !!botaoLimpar,
-        botaoPdf: !!botaoPdf,
-        blocoResultadoProuni: !!blocoResultadoProuni
-    });
-
-    // Elementos de resultado
+    
+    // Elementos onde os resultados são mostrados na tela
     const elMensalComDesconto = document.querySelector("#resultado-base .grid div:nth-child(1) .text-4xl");
     const elSemestreComDesconto = document.querySelector("#resultado-base .grid div:nth-child(2) .text-4xl");
     const elMensalSemDesconto = document.querySelector("#resultado-base .grid div:nth-child(3) .text-4xl");
@@ -28,94 +24,93 @@ document.addEventListener("DOMContentLoaded", function () {
     const elProuniMensal = document.querySelector("#bloco-resultado-prouni .grid div:nth-child(1) .text-3xl");
     const elProuniSemestre = document.querySelector("#bloco-resultado-prouni .grid div:nth-child(2) .text-3xl");
 
-    console.log("Elementos de resultado:", {
-        elMensalComDesconto: !!elMensalComDesconto,
-        elSemestreComDesconto: !!elSemestreComDesconto,
-        elMensalSemDesconto: !!elMensalSemDesconto,
-        elSemestreSemDesconto: !!elSemestreSemDesconto,
-        elProuniMensal: !!elProuniMensal,
-        elProuniSemestre: !!elProuniSemestre
-    });
+    // FUNÇÕES AUXILIARES
 
-    // Função para formatar dinheiro
+    /**
+     * Formata um valor numérico para o formato de moeda brasileira (R$)
+     * @param {number} valor - Valor a ser formatado
+     * @returns {string} Valor formatado como moeda brasileira
+     */
     function formatarDinheiro(valor) {
         return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     }
 
-    // Função principal de cálculo
+    // FUNÇÃO PRINCIPAL DE CÁLCULO
+
+    /**
+     * Realiza todos os cálculos financeiros e atualiza a interface
+     * - Calcula mensalidade com desconto
+     * - Calcula valores semestrais
+     * - Aplica desconto PROUNI se ativo
+     * - Atualiza todos os elementos na tela
+     */
     function calcularEAtualizarTela() {
-        console.log("=== INICIANDO CÁLCULO ===");
-        
+        // Obtém e converte os valores dos campos
         const mensalidadeBruta = parseFloat(campoMensalidade.value) || 0;
         const descontoUnieuro = parseFloat(campoDesconto.value) || 0;
 
-        console.log("Valores capturados:", {
-            mensalidadeBruta,
-            descontoUnieuro
-        });
-
-        // Validações
-        if (mensalidadeBruta === 0 || descontoUnieuro === 0) {
-            console.log("Valores inválidos - mostrando alerta");
-            alert("Por favor, preencha os valores da mensalidade e do desconto para continuar.");
-            return;
-        }
-        if (descontoUnieuro < 5 || descontoUnieuro > 50) {
-            console.log("Desconto fora do range - mostrando alerta");
+        // Validação do desconto Unieuro (deve estar entre 5% e 50%)
+        if (campoDesconto.value && (descontoUnieuro < 5 || descontoUnieuro > 50)) {
             alert("O Desconto Unieuro deve ser um valor entre 5% e 50%.");
             return;
         }
 
-        // Cálculos
+        // CÁLCULOS PRINCIPAIS
+
+        // Calcula mensalidade com desconto aplicado
         const mensalidadeComDesconto = mensalidadeBruta * (1 - descontoUnieuro / 100);
+        
+        // Calcula valores semestrais (6 meses)
         const semestreBruto = mensalidadeBruta * 6;
         const semestreComDesconto = mensalidadeComDesconto * 6;
 
-        console.log("Resultados calculados:", {
-            mensalidadeComDesconto,
-            semestreBruto,
-            semestreComDesconto
-        });
+        // ATUALIZAÇÃO DA INTERFACE - VALORES BASE
 
-        // Atualizar Tela
-        console.log("Atualizando elementos na tela...");
+        // Atualiza os valores sem desconto
         elMensalSemDesconto.textContent = formatarDinheiro(mensalidadeBruta);
         elSemestreSemDesconto.textContent = formatarDinheiro(semestreBruto);
+        
+        // Atualiza os valores com desconto Unieuro
         elMensalComDesconto.textContent = formatarDinheiro(mensalidadeComDesconto);
         elSemestreComDesconto.textContent = formatarDinheiro(semestreComDesconto);
 
-        console.log("Elementos atualizados:", {
-            semDesconto: elMensalSemDesconto.textContent,
-            comDesconto: elMensalComDesconto.textContent
-        });
+        // LÓGICA DO PROUNI
 
-        // Lógica do PROUNI
         if (toggleProuni.checked) {
-            console.log("PROUNI ativado - calculando...");
+            // Mostra o bloco de resultados do PROUNI
             blocoResultadoProuni.classList.remove('hidden');
+            
+            // Calcula valores com PROUNI (50% de desconto adicional)
             const mensalidadeProuni = mensalidadeComDesconto * 0.5;
             const semestreProuni = mensalidadeProuni * 6;
+            
+            // Atualiza os valores com PROUNI
             elProuniMensal.textContent = formatarDinheiro(mensalidadeProuni);
             elProuniSemestre.textContent = formatarDinheiro(semestreProuni);
-            console.log("PROUNI calculado:", {
-                mensalidadeProuni: elProuniMensal.textContent,
-                semestreProuni: elProuniSemestre.textContent
-            });
         } else {
-            console.log("PROUNI desativado - escondendo bloco");
+            // Esconde o bloco de resultados do PROUNI
             blocoResultadoProuni.classList.add('hidden');
         }
-
-        console.log("=== CÁLCULO FINALIZADO ===");
     }
 
-    // Função para limpar
+    // FUNÇÃO DE LIMPEZA
+
+    /**
+     * Limpa todos os campos e reseta a interface para o estado inicial
+     * - Limpa campos de entrada
+     * - Reseta todos os valores exibidos para R$ 0,00
+     * - Desativa o toggle do PROUNI
+     * - Esconde o bloco de resultados do PROUNI
+     */
     function limparCampos() {
-        console.log("Limpando campos...");
+        // Limpa os campos de entrada
         campoMensalidade.value = "";
         campoDesconto.value = "";
         
+        // Valor zero formatado para reutilização
         const valorZero = formatarDinheiro(0);
+        
+        // Reseta todos os elementos de resultado para R$ 0,00
         elMensalSemDesconto.textContent = valorZero;
         elSemestreSemDesconto.textContent = valorZero;
         elMensalComDesconto.textContent = valorZero;
@@ -123,39 +118,46 @@ document.addEventListener("DOMContentLoaded", function () {
         elProuniMensal.textContent = valorZero;
         elProuniSemestre.textContent = valorZero;
         
+        // Reseta o toggle do PROUNI e esconde seu bloco de resultados
         toggleProuni.checked = false;
         blocoResultadoProuni.classList.add('hidden');
-        
-        console.log("Campos limpos");
     }
 
-    // FUNÇÃO PDF SIMPLIFICADA
+    // FUNÇÃO DE GERAÇÃO DE PDF
+
+    /**
+     * Gera um relatório em PDF com os resultados da simulação
+     * - Cria uma nova janela com o conteúdo formatado
+     * - Inclui logo da instituição
+     * - Mostra todos os valores calculados
+     * - Permite impressão/salvamento como PDF
+     */
     function gerarPdf() {
-        console.log("=== GERANDO PDF ===");
-        
-        // Primeiro calcula
-        calcularEAtualizarTela();
-        
-        // Pega os valores JÁ CALCULADOS
+        // CAPTURA DOS VALORES CALCULADOS
+
+        // Obtém os valores já calculados e formatados da interface
         const mensalComDesconto = elMensalComDesconto.textContent;
         const semestreComDesconto = elSemestreComDesconto.textContent;
         const mensalSemDesconto = elMensalSemDesconto.textContent;
         const semestreSemDesconto = elSemestreSemDesconto.textContent;
 
-        console.log("Valores para PDF:", {
-            mensalComDesconto,
-            semestreComDesconto,
-            mensalSemDesconto,
-            semestreSemDesconto
-        });
+        // Validação para evitar PDF em branco
+        if (mensalSemDesconto === formatarDinheiro(0)) {
+             alert("Por favor, preencha os valores e clique em 'Calcular' antes de gerar o PDF.");
+             return;
+        }
 
-        let prouniContent = '';
-        let resultadoFinalContent = '';
-        
+        // CONTEÚDO CONDICIONAL DO PROUNI
+
+        let prouniContent = '';        // Conteúdo HTML do PROUNI
+        let resultadoFinalContent = ''; // Conteúdo HTML do resultado final
+
+        // Se o PROUNI estiver ativado, gera o conteúdo específico
         if (toggleProuni.checked) {
             const prouniMensal = elProuniMensal.textContent;
             const prouniSemestre = elProuniSemestre.textContent;
             
+            // Conteúdo HTML para a seção do PROUNI
             prouniContent = `
                 <div style="background: #faf8f5; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #8B7500; border: 1px solid #d0d0d0;">
                     <h4 style="color: #8B7500; margin: 0 0 15px 0; font-size: 16px; font-weight: bold;">DESCONTO PROUNI (50%)</h4>
@@ -169,11 +171,11 @@ document.addEventListener("DOMContentLoaded", function () {
                             <strong style="color: #8B7500; font-size: 18px;">${prouniSemestre}</strong>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
             
+            // Conteúdo HTML para o resultado final com PROUNI
             resultadoFinalContent = `
-                <div style="background: #0D4B81; padding: 25px; margin: 25px 0; border-radius: 8px; color: white; border: 2px solid #0D4B81;">
+                <div class="bloco-resultado-final" style="background: #0D4B81; padding: 25px; margin: 25px 0; border-radius: 8px; color: white; border: 2px solid #0D4B81;">
                     <h3 style="margin: 0 0 20px 0; text-align: center; font-size: 18px; font-weight: bold;">RESULTADO FINAL - COM TODOS OS DESCONTOS</h3>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
                         <div style="text-align: center;">
@@ -185,81 +187,108 @@ document.addEventListener("DOMContentLoaded", function () {
                             <div style="font-size: 24px; font-weight: bold; margin: 8px 0;">${prouniSemestre}</div>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
         
-    const htmlContent = `
+        // CONSTRUÇÃO DO HTML DO PDF
+        const htmlContent = `
         <html>
-            <head><title>Simulação Unieuro</title></head>
-            <body style="font-family: Arial; padding: 20px;">
+            <head>
+                <title>Simulação Unieuro</title>
+                <style>
+                    /* Estilos específicos para impressão */
+                    @media print {
+                        .no-print { display: none !important; }
+                        .bloco-resultado-final { 
+                            background-color: #ffffff !important; 
+                            border: 2px solid #000000 !important; 
+                        }
+                        .bloco-resultado-final * { 
+                            color: #000000 !important; 
+                        }
+                    }
+                </style>
+            </head>
+            <body style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                <!-- Cabeçalho com logo e informações da instituição -->
                 <div style="text-align: center; margin-bottom: 30px;">
-                <img src="imagens/logounieuro.png" alt="Unieuro" style="height: 60px; margin-bottom: 15px;">
-                    <h1 style="color: #0D4B81;">SIMULAÇÃO FINANCEIRA</h1>
-                    <p>Centro Universitário Unieuro</p>
-                 </div>
-                
-                <div style="margin-bottom: 20px;">
-                    <h3>VALORES ORIGINAIS</h3>
-                    <p>Mensalidade: ${mensalSemDesconto}</p>
-                    <p>Semestre: ${semestreSemDesconto}</p>
+                    <img src="imagens/faviconunieuro.png" alt="Unieuro" style="height: 110px; width: 110px; margin-bottom: 2px;">
+                    <h1 style="color: #0D4B81; margin:0;">SIMULAÇÃO FINANCEIRA</h1>
+                    <p style="margin: 5px 0;">Centro Universitário Unieuro</p>
                 </div>
                 
-                <div style="margin-bottom: 20px;">
-                    <h3>COM DESCONTO UNIEURO</h3>
-                    <p>Mensalidade: ${mensalComDesconto}</p>
-                    <p>Semestre: ${semestreComDesconto}</p>
+                <!-- Seção: Valores Originais -->
+                <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+                    <h3 style="margin-top:0;">VALORES ORIGINAIS</h3>
+                    <p><strong>Mensalidade Bruta:</strong> ${mensalSemDesconto}</p>
+                    <p><strong>Semestre Bruto:</strong> ${semestreSemDesconto}</p>
                 </div>
                 
+                <!-- Seção: Com Desconto Unieuro -->
+                <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+                    <h3 style="margin-top:0;">COM DESCONTO UNIEURO (${campoDesconto.value}%)</h3>
+                    <p><strong>Mensalidade com Desconto:</strong> ${mensalComDesconto}</p>
+                    <p><strong>Semestre com Desconto:</strong> ${semestreComDesconto}</p>
+                </div>
+                
+                <!-- Seção do PROUNI (condicional) -->
                 ${prouniContent}
+                
+                <!-- Resultado Final (condicional) -->
                 ${resultadoFinalContent}
                 
-                <div style="margin-top: 30px; padding: 15px; background: #f0f0f0;">
+                <!-- Informações sobre FIES -->
+                <div style="margin-top: 30px; padding: 15px; background: #f0f0f0; border-radius: 5px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
                     <p><strong>FIES:</strong> Não calculado automaticamente. Consulte a Central de Atendimento.</p>
                 </div>
                 
+                <!-- Botão de impressão (visível apenas na tela) -->
                 <div class="no-print" style="text-align: center; margin-top: 20px;">
-                    <button onclick="window.print()" style="padding: 10px 20px; background: #0D4B81; color: white; border: none; cursor: pointer;">
-                        Imprimir / Salvar PDF
+                    <button onclick="window.print()" style="padding: 10px 30px; background: #0D4B81; color: white; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 16px;">
+                        Imprimir / Salvar em PDF
                     </button>
                 </div>
             </body>
         </html>`;
         
+        // CRIAÇÃO E ABERTURA DA JANELA DO PDF
+
+        // Abre uma nova janela e insere o conteúdo HTML
         const janela = window.open('', '_blank');
         janela.document.write(htmlContent);
         janela.document.close();
-        console.log("PDF gerado com sucesso!");
     }
 
-    // Event Listeners
-    console.log("Configurando event listeners...");
-    
+    // CONFIGURAÇÃO DOS EVENT LISTENERS
+
+    // Evento: Botão Calcular
     botaoCalcular.addEventListener('click', function (event) {
-        console.log("Botão Calcular clicado");
-        event.preventDefault();
+        event.preventDefault(); // Previne o comportamento padrão do formulário
         calcularEAtualizarTela();
     });
 
+    // Evento: Botão Limpar
     botaoLimpar.addEventListener('click', function (event) {
-        console.log("Botão Limpar clicado");
         event.preventDefault();
         limparCampos();
     });
 
+    // Evento: Toggle do PROUNI
     toggleProuni.addEventListener('change', function() {
-        console.log("Toggle PROUNI alterado:", this.checked);
-        calcularEAtualizarTela();
+        // Recalcula automaticamente se já houver valores preenchidos
+        if (campoMensalidade.value) {
+            calcularEAtualizarTela();
+        }
     });
 
+    // Evento: Botão Gerar PDF
     botaoPdf.addEventListener('click', function (event) {
-        console.log("Botão PDF clicado");
         event.preventDefault();
         gerarPdf();
     });
 
-    // Inicializar
-    console.log("Inicializando...");
+    // INICIALIZAÇÃO DO SISTEMA
+
+    // Inicializa a interface com valores zerados
     limparCampos();
-    console.log("=== SCRIPT CARREGADO COMPLETAMENTE ===");
 });

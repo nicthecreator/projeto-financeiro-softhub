@@ -45,7 +45,7 @@ Existem duas formas de utilizar a calculadora:
 ### 1. Acessando a versão online (Recomendado)
 
 
-Você pode acessar a calculadora diretamente pelo link do GitHub Pages (se você tiver configurado):
+Você pode acessar a calculadora diretamente pelo link do GitHub Pages:
 
 
 ➡️ **https://nicthecreator.github.io/projeto-financeiro-softhub/**

@@ -7,15 +7,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const campoMensalidade = document.getElementById("valor-mensalidade");
     const campoDesconto = document.getElementById("desconto-unieuro");
     const toggleProuni = document.getElementById("toggle-prouni");
-    
+
     // Botões de ação
     const botaoCalcular = document.getElementById("btn-calcular");
     const botaoLimpar = document.getElementById("btn-limpar");
     const botaoPdf = document.getElementById("btn-pdf");
-    
+
     // Elementos de exibição de resultados
     const blocoResultadoProuni = document.getElementById("bloco-resultado-prouni");
-    
+
     // Elementos onde os resultados são mostrados na tela
     const elMensalComDesconto = document.querySelector("#resultado-base .grid div:nth-child(1) .text-4xl");
     const elSemestreComDesconto = document.querySelector("#resultado-base .grid div:nth-child(2) .text-4xl");
@@ -46,7 +46,10 @@ document.addEventListener("DOMContentLoaded", function () {
      */
     function calcularEAtualizarTela() {
         // Obtém e converte os valores dos campos
-        const mensalidadeBruta = parseFloat(campoMensalidade.value) || 0;
+        const mensalidadeBruta = parseFloat(
+            campoMensalidade.value.replace(/\./g, '').replace(',', '.')
+        ) || 0;
+
         const descontoUnieuro = parseFloat(campoDesconto.value) || 0;
 
         // Validação do desconto Unieuro (deve estar entre 5% e 50%)
@@ -59,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Calcula mensalidade com desconto aplicado
         const mensalidadeComDesconto = mensalidadeBruta * (1 - descontoUnieuro / 100);
-        
+
         // Calcula valores semestrais (6 meses)
         const semestreBruto = mensalidadeBruta * 6;
         const semestreComDesconto = mensalidadeComDesconto * 6;
@@ -69,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Atualiza os valores sem desconto
         elMensalSemDesconto.textContent = formatarDinheiro(mensalidadeBruta);
         elSemestreSemDesconto.textContent = formatarDinheiro(semestreBruto);
-        
+
         // Atualiza os valores com desconto Unieuro
         elMensalComDesconto.textContent = formatarDinheiro(mensalidadeComDesconto);
         elSemestreComDesconto.textContent = formatarDinheiro(semestreComDesconto);
@@ -79,11 +82,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (toggleProuni.checked) {
             // Mostra o bloco de resultados do PROUNI
             blocoResultadoProuni.classList.remove('hidden');
-            
+
             // Calcula valores com PROUNI (50% de desconto adicional)
             const mensalidadeProuni = mensalidadeComDesconto * 0.5;
             const semestreProuni = mensalidadeProuni * 6;
-            
+
             // Atualiza os valores com PROUNI
             elProuniMensal.textContent = formatarDinheiro(mensalidadeProuni);
             elProuniSemestre.textContent = formatarDinheiro(semestreProuni);
@@ -106,10 +109,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // Limpa os campos de entrada
         campoMensalidade.value = "";
         campoDesconto.value = "";
-        
+
         // Valor zero formatado para reutilização
         const valorZero = formatarDinheiro(0);
-        
+
         // Reseta todos os elementos de resultado para R$ 0,00
         elMensalSemDesconto.textContent = valorZero;
         elSemestreSemDesconto.textContent = valorZero;
@@ -117,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
         elSemestreComDesconto.textContent = valorZero;
         elProuniMensal.textContent = valorZero;
         elProuniSemestre.textContent = valorZero;
-        
+
         // Reseta o toggle do PROUNI e esconde seu bloco de resultados
         toggleProuni.checked = false;
         blocoResultadoProuni.classList.add('hidden');
@@ -143,8 +146,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Validação para evitar PDF em branco
         if (mensalSemDesconto === formatarDinheiro(0)) {
-             alert("Por favor, preencha os valores e clique em 'Calcular' antes de gerar o PDF.");
-             return;
+            alert("Por favor, preencha os valores e clique em 'Calcular' antes de gerar o PDF.");
+            return;
         }
 
         // CONTEÚDO CONDICIONAL DO PROUNI
@@ -156,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (toggleProuni.checked) {
             const prouniMensal = elProuniMensal.textContent;
             const prouniSemestre = elProuniSemestre.textContent;
-            
+
             // Conteúdo HTML para a seção do PROUNI
             prouniContent = `
                 <div style="background: #faf8f5; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #8B7500; border: 1px solid #d0d0d0;">
@@ -172,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
                 </div>`;
-            
+
             // Conteúdo HTML para o resultado final com PROUNI
             resultadoFinalContent = `
                 <div class="bloco-resultado-final" style="background: #0D4B81; padding: 25px; margin: 25px 0; border-radius: 8px; color: white; border: 2px solid #0D4B81;">
@@ -189,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 </div>`;
         }
-        
+
         // CONSTRUÇÃO DO HTML DO PDF
         const htmlContent = `
         <html>
@@ -255,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             </body>
         </html>`;
-        
+
         // CRIAÇÃO E ABERTURA DA JANELA DO PDF
 
         // Abre uma nova janela e insere o conteúdo HTML
@@ -279,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Evento: Toggle do PROUNI
-    toggleProuni.addEventListener('change', function() {
+    toggleProuni.addEventListener('change', function () {
         // Recalcula automaticamente se já houver valores preenchidos
         if (campoMensalidade.value) {
             calcularEAtualizarTela();
@@ -291,6 +294,44 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         gerarPdf();
     });
+
+    // FORMATAÇÃO AUTOMÁTICA DO CAMPO DE MENSALIDADE
+
+    // Permite apenas números, vírgulas e pontos ao digitar
+    campoMensalidade.addEventListener('input', function () {
+        // Remove qualquer caractere que não seja número, vírgula ou ponto
+        let valor = this.value.replace(/[^\d.,]/g, '');
+
+        // Substitui múltiplos pontos ou vírgulas de forma adequada
+        // Mantém apenas o último separador decimal
+        const partes = valor.split(/[,\.]/);
+        if (partes.length > 2) {
+            const decimais = partes.pop(); // guarda a última parte
+            valor = partes.join('') + ',' + decimais;
+        }
+
+        this.value = valor;
+    });
+
+    // Ao sair do campo (blur), formata o número como moeda brasileira
+    campoMensalidade.addEventListener('blur', function () {
+        let valor = this.value;
+
+        if (!valor) return;
+
+        // Converte para formato numérico entendendo , como decimal
+        valor = valor.replace(/\./g, '').replace(',', '.'); // remove pontos de milhar e troca vírgula por ponto
+        let numero = parseFloat(valor);
+
+        if (isNaN(numero)) {
+            this.value = '';
+            return;
+        }
+
+        // Formata de volta para moeda BRL
+        this.value = numero.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    });
+
 
     // INICIALIZAÇÃO DO SISTEMA
 

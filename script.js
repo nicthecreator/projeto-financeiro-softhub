@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // FUNÇÕES AUXILIARES
 
-    /**
+    /*
      * Formata um valor numérico para o formato de moeda brasileira (R$)
      * @param {number} valor - Valor a ser formatado
      * @returns {string} Valor formatado como moeda brasileira
@@ -37,68 +37,76 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // FUNÇÃO PRINCIPAL DE CÁLCULO
 
-    /**
+    /*
      * Realiza todos os cálculos financeiros e atualiza a interface
      * - Calcula mensalidade com desconto
      * - Calcula valores semestrais
      * - Aplica desconto PROUNI se ativo
      * - Atualiza todos os elementos na tela
      */
-    function calcularEAtualizarTela() {
-        // Obtém e converte os valores dos campos
-        const mensalidadeBruta = parseFloat(
-            campoMensalidade.value.replace(/\./g, '').replace(',', '.')
-        ) || 0;
+function calcularEAtualizarTela() {
+    // Obtém e converte os valores dos campos
+    const mensalidadeBruta = parseFloat(
+        campoMensalidade.value.replace(/\./g, '').replace(',', '.')
+    ) || 0;
 
-        const descontoUnieuro = parseFloat(campoDesconto.value) || 0;
+    const descontoUnieuro = parseFloat(campoDesconto.value) || 0;
 
-        // Validação do desconto Unieuro (deve estar entre 5% e 50%)
-        if (campoDesconto.value && (descontoUnieuro < 5 || descontoUnieuro > 50)) {
-            alert("O Desconto Unieuro deve ser um valor entre 5% e 50%.");
-            return;
-        }
-
-        // CÁLCULOS PRINCIPAIS
-
-        // Calcula mensalidade com desconto aplicado
-        const mensalidadeComDesconto = mensalidadeBruta * (1 - descontoUnieuro / 100);
-
-        // Calcula valores semestrais (6 meses)
-        const semestreBruto = mensalidadeBruta * 6;
-        const semestreComDesconto = mensalidadeComDesconto * 6;
-
-        // ATUALIZAÇÃO DA INTERFACE - VALORES BASE
-
-        // Atualiza os valores sem desconto
-        elMensalSemDesconto.textContent = formatarDinheiro(mensalidadeBruta);
-        elSemestreSemDesconto.textContent = formatarDinheiro(semestreBruto);
-
-        // Atualiza os valores com desconto Unieuro
-        elMensalComDesconto.textContent = formatarDinheiro(mensalidadeComDesconto);
-        elSemestreComDesconto.textContent = formatarDinheiro(semestreComDesconto);
-
-        // LÓGICA DO PROUNI
-
-        if (toggleProuni.checked) {
-            // Mostra o bloco de resultados do PROUNI
-            blocoResultadoProuni.classList.remove('hidden');
-
-            // Calcula valores com PROUNI (50% de desconto adicional)
-            const mensalidadeProuni = mensalidadeComDesconto * 0.5;
-            const semestreProuni = mensalidadeProuni * 6;
-
-            // Atualiza os valores com PROUNI
-            elProuniMensal.textContent = formatarDinheiro(mensalidadeProuni);
-            elProuniSemestre.textContent = formatarDinheiro(semestreProuni);
-        } else {
-            // Esconde o bloco de resultados do PROUNI
-            blocoResultadoProuni.classList.add('hidden');
-        }
+    // VALIDAÇÃO: Verifica se o desconto foi preenchido
+    if (!campoDesconto.value) {
+        alert("❌ Por favor, insira corretamente todos os valores antes de continuar.");
+        campoDesconto.focus();
+        return;
     }
+
+    // Validação do desconto Unieuro (deve estar entre 5% e 50%)
+    if (descontoUnieuro < 5 || descontoUnieuro > 50) {
+        alert("❌ O Desconto Unieuro deve ser um valor entre 5% e 50%.");
+        campoDesconto.focus();
+        return;
+    }
+
+    // CÁLCULOS PRINCIPAIS
+
+    // Calcula mensalidade com desconto aplicado
+    const mensalidadeComDesconto = mensalidadeBruta * (1 - descontoUnieuro / 100);
+
+    // Calcula valores semestrais (6 meses)
+    const semestreBruto = mensalidadeBruta * 6;
+    const semestreComDesconto = mensalidadeComDesconto * 6;
+
+    // ATUALIZAÇÃO DA INTERFACE - VALORES BASE
+
+    // Atualiza os valores sem desconto
+    elMensalSemDesconto.textContent = formatarDinheiro(mensalidadeBruta);
+    elSemestreSemDesconto.textContent = formatarDinheiro(semestreBruto);
+
+    // Atualiza os valores com desconto Unieuro
+    elMensalComDesconto.textContent = formatarDinheiro(mensalidadeComDesconto);
+    elSemestreComDesconto.textContent = formatarDinheiro(semestreComDesconto);
+
+    // LÓGICA DO PROUNI
+
+    if (toggleProuni.checked) {
+        // Mostra o bloco de resultados do PROUNI
+        blocoResultadoProuni.classList.remove('hidden');
+
+        // Calcula valores com PROUNI (50% de desconto adicional)
+        const mensalidadeProuni = mensalidadeComDesconto * 0.5;
+        const semestreProuni = mensalidadeProuni * 6;
+
+        // Atualiza os valores com PROUNI
+        elProuniMensal.textContent = formatarDinheiro(mensalidadeProuni);
+        elProuniSemestre.textContent = formatarDinheiro(semestreProuni);
+    } else {
+        // Esconde o bloco de resultados do PROUNI
+        blocoResultadoProuni.classList.add('hidden');
+    }
+}
 
     // FUNÇÃO DE LIMPEZA
 
-    /**
+    /*
      * Limpa todos os campos e reseta a interface para o estado inicial
      * - Limpa campos de entrada
      * - Reseta todos os valores exibidos para R$ 0,00
@@ -146,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Validação para evitar PDF em branco
         if (mensalSemDesconto === formatarDinheiro(0)) {
-            alert("Por favor, preencha os valores e clique em 'Calcular' antes de gerar o PDF.");
+            alert("❌ Por favor, preencha os valores e clique em 'Calcular' antes de gerar o PDF.");
             return;
         }
 
@@ -331,7 +339,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // Formata de volta para moeda BRL
         this.value = numero.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     });
-
 
     // INICIALIZAÇÃO DO SISTEMA
 

@@ -17,6 +17,45 @@
 
     <!-- TailwindCSS (Play CDN v4) -->
     <link href="estilos-compilados.css" rel="stylesheet">
+
+    <style>
+        /* Estilos para os ícones sociais - RESPONSIVOS */
+        .social-icons-header {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .social-icons-footer {
+            display: none;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .social-icons-footer a,
+        .social-icons-header a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0D4B81;
+            border-radius: 50%;
+            color: white;
+        }
+
+        /* Para telas pequenas (celulares) */
+        @media (max-width: 640px) {
+            .social-icons-header {
+                display: none;
+            }
+
+            .social-icons-footer {
+                display: flex;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100">
@@ -27,19 +66,20 @@
             <!-- Logo Unieuro -->
             <img src="imagens/logounieuro.png" alt="Logo Unieuro" class="h-16">
 
-            <div class="flex space-x-2">
-                <a href="https://twitter.com/UNIEURO_OFICIAL" target="_blank"
-                    class="w-8 h-8 rounded-full flex items-center justify-center bg-[#0D4B81] text-white"><i
-                        class="bi bi-twitter-x"></i></a>
-                <a href="https://www.facebook.com/unieuronarede" target="_blank"
-                    class="w-8 h-8 rounded-full flex items-center justify-center bg-[#0D4B81] text-white"><i
-                        class="bi bi-facebook"></i></a>
-                <a href="https://www.instagram.com/unieuro_oficial/" target="_blank"
-                    class="w-8 h-8 rounded-full flex items-center justify-center bg-[#0D4B81] text-white"><i
-                        class="bi bi-instagram"></i></a>
-                <a href="https://www.youtube.com/channel/UCtV17kCGS6rCvnqFyUgl1vw" target="_blank"
-                    class="w-8 h-8 rounded-full flex items-center justify-center bg-[#0D4B81] text-white"><i
-                        class="bi bi-youtube"></i></a>
+            <!-- Ícones das redes sociais - VISÍVEL APENAS NO DESKTOP -->
+            <div class="social-icons-header">
+                <a href="https://twitter.com/UNIEURO_OFICIAL" target="_blank">
+                    <i class="bi bi-twitter-x"></i>
+                </a>
+                <a href="https://www.facebook.com/unieuronarede" target="_blank">
+                    <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://www.instagram.com/unieuro_oficial/" target="_blank">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                <a href="https://www.youtube.com/channel/UCtV17kCGS6rCvnqFyUgl1vw" target="_blank">
+                    <i class="bi bi-youtube"></i>
+                </a>
             </div>
         </div>
     </div>
@@ -280,6 +320,22 @@
         </section>
 
     </main>
+
+    <!-- Ícones das redes sociais - VISÍVEL APENAS NO MOBILE -->
+    <div class="social-icons-footer">
+        <a href="https://twitter.com/UNIEURO_OFICIAL" target="_blank">
+            <i class="bi bi-twitter-x"></i>
+        </a>
+        <a href="https://www.facebook.com/unieuronarede" target="_blank">
+            <i class="bi bi-facebook"></i>
+        </a>
+        <a href="https://www.instagram.com/unieuro_oficial/" target="_blank">
+            <i class="bi bi-instagram"></i>
+        </a>
+        <a href="https://www.youtube.com/channel/UCtV17kCGS6rCvnqFyUgl1vw" target="_blank">
+            <i class="bi bi-youtube"></i>
+        </a>
+    </div>
 
     <!-- Rodapé -->
     <footer class="bg-[#093763] text-gray-300 text-center text-xs py-4 mt-10">
